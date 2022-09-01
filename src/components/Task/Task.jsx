@@ -2,6 +2,7 @@ import './Task.css';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import PropTypes from 'prop-types';
 import { Component } from 'react';
+
 export default class Task extends Component {
   constructor(props) {
     super(props);
@@ -10,12 +11,14 @@ export default class Task extends Component {
       checkClass: this.props.tasks.completed ? 'completed' : '',
     };
   }
+
   changeEditForm = () => {
     this.setState((state) => ({
       editForm: !state.editForm,
       checkClass: !state.editForm ? 'editing' : '',
     }));
   };
+
   changeCheck = (clazzName = '') => {
     if (!this.props.tasks.completed) {
       clazzName = 'completed';
@@ -24,6 +27,7 @@ export default class Task extends Component {
       checkClass: clazzName,
     }));
   };
+
   render() {
     const { description, created, completed } = this.props.tasks;
     const { destroyTask, completedTask, editTask } = this.props;
@@ -41,18 +45,10 @@ export default class Task extends Component {
           />
           <label>
             <span className="description">{description}</span>
-            <span className="created">{`created ${formatDistanceToNow(
-              created
-            )} ago`}</span>
+            <span className="created">{`created ${formatDistanceToNow(created)} ago`}</span>
           </label>
-          <button
-            className="icon icon-edit"
-            onClick={() => this.changeEditForm()}
-          ></button>
-          <button
-            className="icon icon-destroy"
-            onClick={() => destroyTask(this.props.tasks)}
-          ></button>
+          <button className="icon icon-edit" onClick={() => this.changeEditForm()} />
+          <button className="icon icon-destroy" onClick={() => destroyTask(this.props.tasks)} />
         </div>
         {this.state.editForm && (
           <input

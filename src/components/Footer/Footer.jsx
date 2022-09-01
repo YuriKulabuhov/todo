@@ -1,7 +1,8 @@
 import './Footer.css';
-import TaskFilter from '../TaskFilter/TaskFilter';
 import PropTypes from 'prop-types';
-const Footer = ({ destroyAllCompletedTask, countAllActiveTask, filter, setFilter }) => {
+import TaskFilter from '../TaskFilter/TaskFilter';
+
+function Footer({ destroyAllCompletedTask, countAllActiveTask, filter, setFilter }) {
   return (
     <footer className="footer">
       <span className="todo-count">{`${countAllActiveTask()} items left`}</span>
@@ -16,7 +17,7 @@ const Footer = ({ destroyAllCompletedTask, countAllActiveTask, filter, setFilter
       </button>
     </footer>
   );
-};
+}
 export default Footer;
 Footer.propTypes = {
   destroyAllCompletedTask: PropTypes.func,

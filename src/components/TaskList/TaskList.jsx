@@ -1,7 +1,8 @@
-import Task from "../Task/Task";
-import "./TaskList.css";
-import PropTypes from "prop-types";
-const TaskList = (props) => {
+import Task from '../Task/Task';
+import './TaskList.css';
+import PropTypes from 'prop-types';
+
+function TaskList(props) {
   return (
     <ul className="todo-list">
       {props.tasks.map((task) => (
@@ -15,11 +16,11 @@ const TaskList = (props) => {
       ))}
     </ul>
   );
-};
+}
 export default TaskList;
-// TaskList.propTypes = {
-//   tasks: PropTypes.array,
-//   destroyTask: PropTypes.func,
-//   completedTask: PropTypes.func,
-//   editTask: PropTypes.func,
-// };
+TaskList.propTypes = {
+  tasks: PropTypes.array,
+  destroyTask: PropTypes.func,
+  completedTask: PropTypes.func,
+  editTask: PropTypes.func,
+};

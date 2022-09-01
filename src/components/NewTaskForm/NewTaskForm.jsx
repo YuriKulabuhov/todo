@@ -6,11 +6,13 @@ export default class NewTaskForm extends Component {
   state = {
     label: '',
   };
+
   labelChange = (event) => {
     this.setState({
       label: event.target.value,
     });
   };
+
   sendToTasks = (event) => {
     const { label } = this.state;
     if (event.key === 'Enter') {
@@ -36,6 +38,6 @@ export default class NewTaskForm extends Component {
   }
 }
 
-// NewTaskForm.propTypes = {
-//   addPostEnter: PropTypes.func,
-// };
+NewTaskForm.propTypes = {
+  addTaskEnter: PropTypes.func,
+};
