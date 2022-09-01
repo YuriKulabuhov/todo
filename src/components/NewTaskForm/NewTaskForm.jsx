@@ -15,7 +15,7 @@ export default class NewTaskForm extends Component {
 
   sendToTasks = (event) => {
     const { label } = this.state;
-    if (event.key === 'Enter') {
+    if (event.key === 'Enter' && label.trim()) {
       this.props.addTaskEnter(label);
       this.setState({ label: '' });
     }

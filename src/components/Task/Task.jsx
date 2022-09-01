@@ -9,6 +9,7 @@ export default class Task extends Component {
     this.state = {
       editForm: false,
       checkClass: this.props.tasks.completed ? 'completed' : '',
+      editFormText: this.props.tasks.description,
     };
   }
 
@@ -54,7 +55,12 @@ export default class Task extends Component {
           <input
             type="text"
             className="edit"
-            placeholder={description}
+            value={this.state.editFormText}
+            onChange={(event) => {
+              this.setState((state) => ({
+                editFormText: event.target.value,
+              }));
+            }}
             autoFocus
             onKeyUp={(e) => {
               if (e.key === 'Enter') {
