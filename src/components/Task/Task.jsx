@@ -1,7 +1,9 @@
+/* eslint-disable react/no-access-state-in-setstate */
 import './Task.css';
 import formatDistanceToNow from 'date-fns/formatDistanceToNow';
 import PropTypes from 'prop-types';
 import { Component } from 'react';
+import timerPart from '../Timerfunc/Timerfunc';
 
 export default class Task extends Component {
   constructor(props) {
@@ -10,8 +12,38 @@ export default class Task extends Component {
       editForm: false,
       checkClass: this.props.tasks.completed ? 'completed' : '',
       editFormText: this.props.tasks.description,
+      timer: null,
+      timesLeft: this.props.tasks.timesLeft,
     };
   }
+
+  timerChange = () => {
+    clearInterval(this.state.timer);
+    const timer = setInterval(() => {
+      const count = this.state.timesLeft - 1;
+      this.setState({
+        timesLeft: count,
+        timer,
+      });
+      if (count < 0) {
+        clearInterval(timer);
+        this.setState({
+          timesLeft: this.props.tasks.timesLeft,
+          timer: null,
+        });
+      }
+    }, 1000);
+    return this.setState({
+      timer,
+    });
+  };
+
+  timerStop = () => {
+    clearInterval(this.state.timer);
+    this.setState({
+      timer: null,
+    });
+  };
 
   changeEditForm = () => {
     this.setState((state) => ({
@@ -30,8 +62,11 @@ export default class Task extends Component {
   };
 
   render() {
+    const timeLeft = this.state.timesLeft;
     const { description, created, completed } = this.props.tasks;
     const { destroyTask, completedTask, editTask } = this.props;
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft - minutes * 60;
     return (
       <li className={this.state.checkClass}>
         <div className="view">
@@ -45,8 +80,16 @@ export default class Task extends Component {
             }}
           />
           <label>
-            <span className="description">{description}</span>
-            <span className="created">{`created ${formatDistanceToNow(created)} ago`}</span>
+            <span className="title">{description}</span>
+            <span className="description">
+              {this.state.timer !== null ? (
+                <button className="icon icon-pause" onClick={this.timerStop} />
+              ) : (
+                <button className="icon icon-play" onClick={this.timerChange} />
+              )}
+              {timerPart(minutes)}:{timerPart(seconds)}
+            </span>
+            <span className="description">{`created ${formatDistanceToNow(created)} ago`}</span>
           </label>
           <button className="icon icon-edit" onClick={() => this.changeEditForm()} />
           <button className="icon icon-destroy" onClick={() => destroyTask(this.props.tasks)} />

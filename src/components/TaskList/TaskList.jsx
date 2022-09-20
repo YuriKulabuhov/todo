@@ -12,6 +12,7 @@ function TaskList(props) {
           destroyTask={props.destroyTask}
           completedTask={props.completedTask}
           editTask={props.editTask}
+          // runTimer={props.runTimer}
         />
       ))}
     </ul>

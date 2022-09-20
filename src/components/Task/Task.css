@@ -1,7 +1,7 @@
 .toggle-all {
   width: 1px;
   height: 1px;
-  border: none; 
+  border: none; /* Mobile Safari */
   opacity: 0;
   position: absolute;
   right: 100%;
@@ -20,7 +20,7 @@
 }
 
 .toggle-all + label:before {
-  content: "❯";
+  content: '❯';
   font-size: 22px;
   color: #e6e6e6;
   padding: 10px 27px 10px 27px;

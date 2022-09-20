@@ -10,12 +10,14 @@ export default class App extends Component {
       {
         id: 1660499558000,
         description: 'Make a to-do list',
+        timesLeft: 180,
         created: 1660499558000,
         completed: false,
       },
       {
         id: 1660585958000,
         description: 'Send to-do list',
+        timesLeft: 4,
         created: 1660585958000,
         completed: false,
       },
@@ -23,9 +25,9 @@ export default class App extends Component {
     filter: 'all',
   };
 
-  addTaskEnter = (label) => {
+  addTaskEnter = (label, minutes, seconds) => {
     this.setState((state) => {
-      const newTask = this.createNewTaskItem(label);
+      const newTask = this.createNewTaskItem(label, minutes, seconds);
       return { tasks: [...state.tasks, newTask] };
     });
   };
@@ -88,12 +90,25 @@ export default class App extends Component {
     this.setState({ filter });
   };
 
-  createNewTaskItem = (lable) => ({
+  createNewTaskItem = (lable, times) => ({
     id: Date.now(),
     description: lable,
+    timesLeft: times,
     created: Date.now(),
     completed: false,
   });
+
+  // runTimer = (id) => {
+  //   this.setState((state) => {
+  //     const store = state.tasks;
+  //     const idx = store.findIndex((item) => item.id === id);
+  //     const oldItem = store[idx];
+  //     const value = timesLeft >= 1 ? timesLeft - 1 : 0;
+  //     const newItem = { ...oldItem, timesLeft: value };
+  //     const tasks = [...state.tasks.slice(0, idx), newItem, ...state.tasks.slice(idx + 1)];
+  //     return { tasks };
+  //   });
+  // };
 
   render() {
     const { tasks, filter } = this.state;
@@ -109,6 +124,7 @@ export default class App extends Component {
               destroyTask={this.destroyTask}
               completedTask={this.completedTask}
               editTask={this.editTask}
+              // runTimer={this.runTimer}
             />
           ) : (
             <h2>There are no plans...</h2>
