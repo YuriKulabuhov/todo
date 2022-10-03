@@ -1,85 +1,73 @@
 import './NewTaskForm.css';
-import { Component } from 'react';
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 
-export default class NewTaskForm extends Component {
-  state = {
-    label: '',
-    minutes: '',
-    seconds: '',
+const NewTaskForm = ({ addTaskEnter }) => {
+  const [label, setLabel] = useState('');
+  const [minutes, setMinutes] = useState('');
+  const [seconds, setSeconds] = useState('');
+
+  const labelChange = (event) => {
+    setLabel(event.target.value);
   };
 
-  labelChange = (event) => {
-    this.setState({
-      label: event.target.value,
-    });
-  };
-
-  minChange = (event) => {
+  const minChange = (event) => {
     if (Number.isNaN(Number(event.target.value))) {
       // eslint-disable-next-line no-alert
       alert("It's not a number!");
     }
-    this.setState({
-      minutes: event.target.value,
-    });
+    setMinutes(event.target.value);
   };
 
-  secChange = (event) => {
+  const secChange = (event) => {
     if (Number.isNaN(Number(event.target.value))) {
       // eslint-disable-next-line no-alert
       alert("It's not a number!");
     }
-    this.setState({
-      seconds: event.target.value,
-    });
+    setSeconds(event.target.value);
   };
 
-  sendToTasks = (event) => {
-    const { label, minutes, seconds } = this.state;
+  const sendToTasks = (event) => {
     const timesLeft = Number(minutes) * 60 + Number(seconds);
     if (event.key === 'Enter' && label.trim()) {
-      this.props.addTaskEnter(label, timesLeft);
-      this.setState({
-        label: '',
-        minutes: '',
-        seconds: '',
-      });
+      addTaskEnter(label, timesLeft);
+      setLabel('');
+      setMinutes('');
+      setSeconds('');
     }
   };
 
-  render() {
-    return (
-      <header className="header">
-        <h1>todos</h1>
-        <form className="new-todo-form">
-          <input
-            className="new-todo"
-            placeholder="What needs to be done?"
-            autoFocus
-            value={this.state.label}
-            onChange={this.labelChange}
-            onKeyUp={this.sendToTasks}
-          />
-          <input
-            className="new-todo-form__timer"
-            placeholder="Min"
-            autoFocus
-            value={this.state.minutes}
-            onChange={this.minChange}
-          />
-          <input
-            className="new-todo-form__timer"
-            placeholder="Sec"
-            autoFocus
-            value={this.state.seconds}
-            onChange={this.secChange}
-          />
-        </form>
-      </header>
-    );
-  }
-}
+  return (
+    <header className="header">
+      <h1>todos</h1>
+      <form className="new-todo-form">
+        <input
+          className="new-todo"
+          placeholder="What needs to be done?"
+          autoFocus
+          value={label}
+          onChange={labelChange}
+          onKeyUp={sendToTasks}
+        />
+        <input
+          className="new-todo-form__timer"
+          placeholder="Min"
+          autoFocus
+          value={minutes}
+          onChange={minChange}
+        />
+        <input
+          className="new-todo-form__timer"
+          placeholder="Sec"
+          autoFocus
+          value={seconds}
+          onChange={secChange}
+        />
+      </form>
+    </header>
+  );
+};
+export default NewTaskForm;
 
 NewTaskForm.propTypes = {
   addTaskEnter: PropTypes.func,

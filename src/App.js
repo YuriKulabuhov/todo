@@ -1,45 +1,45 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import NewTaskForm from './components/NewTaskForm/NewTaskForm';
 import TaskList from './components/TaskList/TaskList';
 import Footer from './components/Footer/Footer';
 import './App.css';
 
-export default class App extends Component {
-  state = {
-    tasks: [
-      {
-        id: 1660499558000,
-        description: 'Make a to-do list',
-        timesLeft: 180,
-        created: 1660499558000,
-        completed: false,
-      },
-      {
-        id: 1660585958000,
-        description: 'Send to-do list',
-        timesLeft: 4,
-        created: 1660585958000,
-        completed: false,
-      },
-    ],
-    filter: 'all',
+function App() {
+  const [tasks, setTasks] = useState([
+    {
+      id: 1660499558000,
+      description: 'Make a to-do list',
+      timesLeft: 180,
+      created: 1660499558000,
+      completed: false,
+    },
+    {
+      id: 1660585958000,
+      description: 'Send to-do list',
+      timesLeft: 4,
+      created: 1660585958000,
+      completed: false,
+    },
+  ]);
+  const [filter, setFilter] = useState('all');
+
+  const createNewTaskItem = (lable, times) => ({
+    id: Date.now(),
+    description: lable,
+    timesLeft: times,
+    created: Date.now(),
+    completed: false,
+  });
+  const addTaskEnter = (label, minutes, seconds) => {
+    const newTask = createNewTaskItem(label, minutes, seconds);
+    setTasks([...tasks, newTask]);
   };
 
-  addTaskEnter = (label, minutes, seconds) => {
-    this.setState((state) => {
-      const newTask = this.createNewTaskItem(label, minutes, seconds);
-      return { tasks: [...state.tasks, newTask] };
-    });
+  const destroyTask = (taskItem) => {
+    setTasks(tasks.filter((tsk) => tsk.id !== taskItem.id));
   };
 
-  destroyTask = (taskItem) => {
-    this.setState((state) => {
-      const tasks = state.tasks.filter((tsk) => tsk.id !== taskItem.id);
-      return { tasks };
-    });
-  };
-
-  setOptionTask = (arr, id, propName) => {
+  const setOptionTask = (arr, id, propName) => {
     const idx = arr.findIndex((item) => item.id === id);
     const oldItem = arr[idx];
     const value = !oldItem[propName];
@@ -47,96 +47,68 @@ export default class App extends Component {
     return [...arr.slice(0, idx), item, ...arr.slice(idx + 1)];
   };
 
-  completedTask = (id) => {
-    this.setState((state) => {
-      const tasks = this.setOptionTask(state.tasks, id, 'completed');
-      return { tasks };
-    });
+  const completedTask = (id) => {
+    const tasksResult = setOptionTask(tasks, id, 'completed');
+    setTasks(tasksResult);
   };
 
-  editTask = (event, taskItem) => {
-    this.setState((state) => {
-      const idx = state.tasks.findIndex((el) => el.id === taskItem.id);
-      const oldItem = state.tasks[idx];
+  const editTask = (event, taskItem) => {
+    setTasks((task) => {
+      const idx = tasks.findIndex((el) => el.id === taskItem.id);
+      const oldItem = tasks[idx];
       const newItem = { ...oldItem, description: event.target.value };
-      const tasks = [...state.tasks.slice(0, idx), newItem, ...state.tasks.slice(idx + 1)];
-      return { tasks };
+      const tasksResult = [...tasks.slice(0, idx), newItem, ...tasks.slice(idx + 1)];
+      return tasksResult;
     });
   };
 
-  destroyAllCompletedTask = () => {
-    this.setState((state) => {
-      const tasks = state.tasks.filter((tsk) => !tsk.completed);
-      return { tasks };
-    });
+  const destroyAllCompletedTask = () => {
+    setTasks(tasks.filter((tsk) => !tsk.completed));
   };
 
-  countAllActiveTask = () => this.state.tasks.filter((tsk) => !tsk.completed).length;
+  const countAllActiveTask = () => tasks.filter((tsk) => !tsk.completed).length;
 
-  filterTaskFunc = (tasks, filter) => {
-    switch (filter) {
+  const filterTaskFunc = (tasksArray, filterCount) => {
+    switch (filterCount) {
       case 'all':
-        return tasks;
+        return tasksArray;
       case 'active':
-        return tasks.filter((e) => !e.completed);
+        return tasksArray.filter((e) => !e.completed);
       case 'completed':
-        return tasks.filter((e) => e.completed);
+        return tasksArray.filter((e) => e.completed);
       default:
-        return tasks;
+        return tasksArray;
     }
   };
 
-  filterChange = (filter) => {
-    this.setState({ filter });
+  const filterChange = (filterCount) => {
+    setFilter(filterCount);
   };
 
-  createNewTaskItem = (lable, times) => ({
-    id: Date.now(),
-    description: lable,
-    timesLeft: times,
-    created: Date.now(),
-    completed: false,
-  });
+  const visibleItems = filterTaskFunc(tasks, filter);
 
-  // runTimer = (id) => {
-  //   this.setState((state) => {
-  //     const store = state.tasks;
-  //     const idx = store.findIndex((item) => item.id === id);
-  //     const oldItem = store[idx];
-  //     const value = timesLeft >= 1 ? timesLeft - 1 : 0;
-  //     const newItem = { ...oldItem, timesLeft: value };
-  //     const tasks = [...state.tasks.slice(0, idx), newItem, ...state.tasks.slice(idx + 1)];
-  //     return { tasks };
-  //   });
-  // };
-
-  render() {
-    const { tasks, filter } = this.state;
-    const visibleItems = this.filterTaskFunc(tasks, filter);
-
-    return (
-      <section className="todoapp">
-        <NewTaskForm addTaskEnter={this.addTaskEnter} />
-        <section className="main">
-          {this.state.tasks.length ? (
-            <TaskList
-              tasks={visibleItems}
-              destroyTask={this.destroyTask}
-              completedTask={this.completedTask}
-              editTask={this.editTask}
-              // runTimer={this.runTimer}
-            />
-          ) : (
-            <h2>There are no plans...</h2>
-          )}
-          <Footer
-            destroyAllCompletedTask={this.destroyAllCompletedTask}
-            countAllActiveTask={this.countAllActiveTask}
-            filter={filter}
-            setFilter={this.filterChange}
+  return (
+    <section className="todoapp">
+      <NewTaskForm addTaskEnter={addTaskEnter} />
+      <section className="main">
+        {tasks.length ? (
+          <TaskList
+            tasks={visibleItems}
+            destroyTask={destroyTask}
+            completedTask={completedTask}
+            editTask={editTask}
           />
-        </section>
+        ) : (
+          <h2>There are no plans...</h2>
+        )}
+        <Footer
+          destroyAllCompletedTask={destroyAllCompletedTask}
+          countAllActiveTask={countAllActiveTask}
+          filter={filter}
+          setFilter={filterChange}
+        />
       </section>
-    );
-  }
+    </section>
+  );
 }
+export default App;
